@@ -55,8 +55,9 @@ def get_media(id: str, format_id: str, media_type: str):
 
 
 def to_piped_audio_streams(audio_streams, video_id: str):
+    host_url = request.headers.get("X-Forwarded-Host", request.host_url)
     return [{
-        "url": f"{request.host_url}audio/{video_id}/{x['format_id']}",
+        "url": f"{host_url}audio/{video_id}/{x['format_id']}",
         "format": x["audio_ext"].upper(),
         "quality": str(x["abr"]) + "kbps",
         "mimeType": "audio/" + x["audio_ext"],
@@ -65,8 +66,9 @@ def to_piped_audio_streams(audio_streams, video_id: str):
 
 
 def to_piped_video_streams(video_streams, video_id: str):
+    host_url = request.headers.get("X-Forwarded-Host", request.host_url)
     return [{
-        "url": f"{request.host_url}video/{video_id}/{x['format_id']}",
+        "url": f"{host_url}video/{video_id}/{x['format_id']}",
         "format": x["video_ext"].upper().replace("MP4", "MPEG_4"),
         "quality": x["format_note"],
         "mimeType": "video/" + x["video_ext"],
