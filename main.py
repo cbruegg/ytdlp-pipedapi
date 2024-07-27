@@ -55,7 +55,7 @@ def get_media(id: str, format_id: str, media_type: str):
 
 
 def to_piped_audio_streams(audio_streams, video_id: str):
-    host_url = request.headers.get("X-Forwarded-Host", request.host_url)
+    host_url = get_host_url()
     return [{
         "url": f"{host_url}audio/{video_id}/{x['format_id']}",
         "format": x["audio_ext"].upper(),
@@ -66,7 +66,7 @@ def to_piped_audio_streams(audio_streams, video_id: str):
 
 
 def to_piped_video_streams(video_streams, video_id: str):
-    host_url = request.headers.get("X-Forwarded-Host", request.host_url)
+    host_url = get_host_url()
     return [{
         "url": f"{host_url}video/{video_id}/{x['format_id']}",
         "format": x["video_ext"].upper().replace("MP4", "MPEG_4"),
@@ -83,6 +83,14 @@ def get_video_info(id: str):
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
         return info
+
+
+def get_host_url() -> str:
+    forwarded = request.headers.get("X-Forwarded-Host", "")
+    if forwarded != "":
+        return "https://" + forwarded
+    else:
+        return request.host_url
 
 
 def read_from_subprocess(p):
@@ -103,4 +111,4 @@ if __name__ == '__main__':
 # TODO Next steps:
 #   3. Deploy to Oracle server
 #   4. Test with app
-#   5. Maybe filter formats better
+#   5. Maybe filter formats better; also there are duplicates in it
