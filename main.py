@@ -15,14 +15,11 @@ def get_streams(id: str):
     jpg_thumbnails = [x for x in info["thumbnails"] if x["url"].endswith(".jpg")]
     thumbnail = max(jpg_thumbnails, key=lambda x: x.get("preference", -1000))
 
-    m4a_audio_streams = [x for x in info["formats"] if x["ext"] == "m4a"]
-    mp4_video_streams = [x for x in info["formats"] if x["ext"] == "mp4" and x["vcodec"] != "none"]
-
     return {
         "title": info["title"],
         "thumbnailUrl": thumbnail["url"],
-        "audioStreams": to_piped_audio_streams(m4a_audio_streams, id),
-        "videoStreams": to_piped_video_streams(mp4_video_streams, id)
+        "audioStreams": to_piped_audio_streams(info["formats"], id),
+        "videoStreams": to_piped_video_streams(info["formats"], id)
     }
 
 
@@ -54,19 +51,23 @@ def get_media(id: str, format_id: str, media_type: str):
     )
 
 
-def to_piped_audio_streams(audio_streams, video_id: str):
+def to_piped_audio_streams(streams, video_id: str):
     host_url = get_host_url()
+    filtered_streams = [x for x in streams if "quality" in x and x["ext"] != "html"]
+    sorted_streams = sorted(filtered_streams, key=lambda x: x["quality"], reverse=True)
     return [{
         "url": f"{host_url}audio/{video_id}/{x['format_id']}",
         "format": x["audio_ext"].upper(),
         "quality": str(x["abr"]) + "kbps",
         "mimeType": "audio/" + x["audio_ext"],
         "codec": x["acodec"]
-    } for x in audio_streams]
+    } for x in sorted_streams if x["ext"] == "m4a" and not x["format_id"].endswith("drc")]
 
 
-def to_piped_video_streams(video_streams, video_id: str):
+def to_piped_video_streams(streams, video_id: str):
     host_url = get_host_url()
+    filtered_streams = [x for x in streams if "quality" in x and x["ext"] != "html"]
+    sorted_streams = sorted(filtered_streams, key=lambda x: x["quality"], reverse=True)
     return [{
         "url": f"{host_url}video/{video_id}/{x['format_id']}",
         "format": x["video_ext"].upper().replace("MP4", "MPEG_4"),
@@ -74,7 +75,7 @@ def to_piped_video_streams(video_streams, video_id: str):
         "mimeType": "video/" + x["video_ext"],
         "codec": x["vcodec"],
         "videoOnly": x["acodec"] == "none"
-    } for x in video_streams if "format_note" in x]
+    } for x in sorted_streams if "format_note" in x and x["ext"] == "mp4" and x["vcodec"] != "none"]
 
 
 def get_video_info(id: str):
@@ -110,5 +111,3 @@ if __name__ == '__main__':
 
 # TODO Next steps:
 #   3. Deploy to Oracle server
-#   4. Test with app
-#   5. Maybe filter formats better; also there are duplicates in it; sort them by quality in desc order
