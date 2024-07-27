@@ -88,7 +88,7 @@ def get_video_info(id: str):
 def get_host_url() -> str:
     forwarded = request.headers.get("X-Forwarded-Host", "")
     if forwarded != "":
-        return "https://" + forwarded
+        return "https://" + forwarded + "/"
     else:
         return request.host_url
 
