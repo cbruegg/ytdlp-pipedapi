@@ -59,7 +59,7 @@ def to_piped_audio_streams(streams, video_id: str):
         "url": f"{host_url}audio/{video_id}/{x['format_id']}",
         "format": x["audio_ext"].upper(),
         "quality": str(x["abr"]) + "kbps",
-        "mimeType": "audio/" + x["audio_ext"],
+        "mimeType": "audio/" + x["audio_ext"].replace("m4a", "mp4"),
         "codec": x["acodec"]
     } for x in sorted_streams if x["ext"] == "m4a" and not x["format_id"].endswith("drc")]
 
