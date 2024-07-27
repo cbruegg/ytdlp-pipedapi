@@ -99,8 +99,6 @@ if __name__ == '__main__':
     app.run(port=port, debug=debug)
 
 # TODO Next steps:
-#   1. Dockerize, but run using python3 -m flask main run
-#   2. Create docker-compose file with Nginx that fronts Flask
 #   3. Deploy to Oracle server
 #   4. Test with app
 #   5. Maybe filter formats better
