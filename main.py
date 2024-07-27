@@ -36,6 +36,13 @@ def get_video(id: str, format_id: str):
 def get_media(id: str, format_id: str, media_type: str):
     outfile_name = f'{id}-{media_type}.dat'
 
+    video_info = get_video_info(id)
+    selected_format = [x for x in video_info["formats"] if x["format_id"] == format_id][0]
+    if "filesize" in selected_format:
+        filesize = selected_format["filesize"]
+    else:
+        filesize = None
+
     env = {}
     env.update(os.environ)
     p = subprocess.Popen(
@@ -43,11 +50,14 @@ def get_media(id: str, format_id: str, media_type: str):
         env=env,
         stdout=subprocess.PIPE)
 
+    headers = {
+        'Content-Disposition': f'attachment; filename={outfile_name}'
+    }
+    if filesize is not None:
+        headers["Content-Length"] = str(filesize)
     return Response(
         stream_with_context(read_from_subprocess(p)),
-        headers={
-            'Content-Disposition': f'attachment; filename={outfile_name}'
-        }
+        headers=headers
     )
 
 
