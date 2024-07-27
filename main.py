@@ -7,9 +7,36 @@ from flask import Flask, request, jsonify, Response, stream_with_context
 
 app = Flask(__name__)
 
+DEMO_ID = "big_buck_bunny"
+
 
 @app.route('/streams/<id>')
 def get_streams(id: str):
+    if id == DEMO_ID:
+        return {
+            "title": "Big Buck Bunny",
+            "thumbnailUrl": f"{get_host_url()}demodata/thumbnail.jpg",
+            "audioStreams": [
+                {
+                    "url": f"{get_host_url()}demodata/audio-140-demo.dat",
+                    "format": "M4A",
+                    "quality": "128kbps",
+                    "mimeType": "audio/mp4",
+                    "codec": "mp4a.40.5"
+                }
+            ],
+            "videoStreams": [
+                {
+                    "url": f"{get_host_url()}demodata/video-136-demo.dat",
+                    "format": "MPEG_4",
+                    "quality": "1080p",
+                    "mimeType": "video/mp4",
+                    "codec": "avc1.640028",
+                    "videoOnly": True
+                }
+            ]
+        }
+
     info = get_video_info(id)
 
     jpg_thumbnails = [x for x in info["thumbnails"] if x["url"].endswith(".jpg")]
@@ -21,6 +48,11 @@ def get_streams(id: str):
         "audioStreams": to_piped_audio_streams(info["formats"], id),
         "videoStreams": to_piped_video_streams(info["formats"], id)
     }
+
+
+@app.route('/demodata/<filename>')
+def get_demodata(filename):
+    return app.send_static_file(f'demodata/{filename}')
 
 
 @app.route('/audio/<id>/<format_id>')
@@ -121,6 +153,3 @@ if __name__ == '__main__':
     port = 5000 if len(args) == 0 else int(args[0])
     debug = False if len(args) <= 1 else args[1] == "debug"
     app.run(port=port, debug=debug)
-
-# TODO Next steps:
-#   3. Deploy to Oracle server
