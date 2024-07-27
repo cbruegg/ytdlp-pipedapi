@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-docker run --rm -it "$(docker build -q .)"
+docker run -p 5000:5000 --rm -it "$(docker build -q .)"
