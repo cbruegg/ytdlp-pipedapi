@@ -20,7 +20,7 @@ def get_streams(id: str):
 
     return {
         "title": info["title"],
-        "thumbnail": thumbnail["url"],
+        "thumbnailUrl": thumbnail["url"],
         "audioStreams": to_piped_audio_streams(m4a_audio_streams, id),
         "videoStreams": to_piped_video_streams(mp4_video_streams, id)
     }
