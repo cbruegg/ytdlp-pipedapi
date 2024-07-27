@@ -111,4 +111,4 @@ if __name__ == '__main__':
 # TODO Next steps:
 #   3. Deploy to Oracle server
 #   4. Test with app
-#   5. Maybe filter formats better; also there are duplicates in it
+#   5. Maybe filter formats better; also there are duplicates in it; sort them by quality in desc order

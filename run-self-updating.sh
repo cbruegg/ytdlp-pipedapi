@@ -6,8 +6,9 @@
 
 while true; do
   # Start the Flask app in the background
-  echo "Starting the Flask app..."
-  flask run &
+  workers=$(($(nproc) * 2))
+  echo "Starting the Flask app with $workers workers..."
+  gunicorn -w "$workers" "main:app" -b "0.0.0.0:5000" &
   FLASK_PID=$!
 
   # Run the Flask app for 24 hours
