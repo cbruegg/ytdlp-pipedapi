@@ -88,9 +88,12 @@ def to_piped_video_streams(streams, video_id: str):
     } for x in sorted_streams if "format_note" in x and x["ext"] == "mp4" and x["vcodec"] != "none"]
 
 
-def get_video_info(id: str):
+# second parameter is an optional format id
+def get_video_info(id: str, format_id: str or None = None):
     url = f"https://www.youtube.com/watch?v={id}"
     ydl_opts = {}
+    if format_id is not None:
+        ydl_opts["format"] = format_id
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
         return info
