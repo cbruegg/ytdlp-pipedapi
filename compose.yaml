@@ -1,0 +1,7 @@
+services:
+  ytdlp_pipedapi:
+    container_name: "ytdlp_pipedapi"
+    build: .
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
