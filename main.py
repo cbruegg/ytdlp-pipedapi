@@ -136,7 +136,8 @@ def get_host_url() -> str:
     if forwarded != "":
         return "https://" + forwarded + "/"
     else:
-        return request.host_url
+        # We always use HTTPS as iOS requires it
+        return request.host_url.replace("http://", "https://")
 
 
 def read_from_subprocess(p):
