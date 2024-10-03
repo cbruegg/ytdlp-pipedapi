@@ -83,7 +83,8 @@ def get_media(id: str, format_id: str, media_type: str):
         stdout=subprocess.PIPE)
 
     headers = {
-        'Content-Disposition': f'attachment; filename={outfile_name}'
+        'Content-Disposition': f'attachment; filename={outfile_name}',
+        'Content-Type': 'application/octet-stream'
     }
     if filesize is not None:
         headers["Content-Length"] = str(filesize)
