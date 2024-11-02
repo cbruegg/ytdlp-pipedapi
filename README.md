@@ -6,6 +6,8 @@ that lets users download videos from [Piped instances](https://github.com/TeamPi
 Unfortunately, Piped instances are often slow or unreliable, so I've developed a small Docker container
 that behaves roughly like the API of a Piped instance, but uses yt-dlp to download videos.
 
+**It is recommended to host this service on a residential internet network from your home to avoid yt-dlp getting blocked.**
+
 ## Usage
 
 1. Install Docker
@@ -32,4 +34,5 @@ server {
 }
 ```
 
-To set up HTTPS, you can use [Certbot](https://certbot.eff.org/).
+To set up HTTPS, you can use [Certbot](https://certbot.eff.org/) or make your service available through a [CloudFlare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started/) (recommended).
+Setting up HTTPS is required for use with EmptyPipe.
